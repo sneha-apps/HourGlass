@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hourglass | World Clock</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --text-primary: #1a1a18;
+      --text-secondary: #4A5568;
+      --accent: #378ADD;
+      --logo-color: #2D3748; 
+      --day-bg: #ADD8E6;    
+      --night-bg: #374151;  
+      --night-text: #F3F4F6;
+      --radius-lg: 12px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body { 
+      font-family: var(--font); 
+      background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+      background-attachment: fixed;
+      color: var(--text-primary); 
+      min-height: 100vh; 
+      padding: 2rem 1rem; 
+      transition: background 1s ease;
+    }
+    .container { max-width: 860px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: var(--radius-lg); padding: 1.75rem 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
+    
+    .wc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 10px; }
+    .logo-container { display: flex; align-items: center; gap: 12px; }
+    .custom-logo { width: 32px; height: 32px; color: var(--logo-color); }
+    .wc-title { font-size: 24px; font-weight: 600; color: var(--text-primary); }
+    
+    .header-actions { display: flex; gap: 8px; }
+
+    .wc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 2.5rem; }
+    
+    .clock-card { border-radius: var(--radius-lg); padding: 1.25rem; position: relative; transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.05); cursor: grab; }
+    .clock-card.day { background-color: var(--day-bg); color: #2D3748; box-shadow: 0 4px 12px rgba(173, 216, 230, 0.4); }
+    .clock-card.night { background-color: var(--night-bg); color: var(--night-text); box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4); }
+    
+    .day-night-icon { position: absolute; top: 1rem; right: 1rem; font-size: 20px; }
+    .clock-city { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; pointer-events: none; }
+    .clock-offset { font-size: 11px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; }
+    .clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; pointer-events: none; }
+    .clock-date { font-size: 12px; margin-top: 4px; opacity: 0.9; pointer-events: none; }
+    
+    .card-actions { display: flex; gap: 6px; margin-top: 12px; }
+    button { font-family: var(--font); font-size: 13px; padding: 6px 12px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; color: #1a1a18; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; }
+    button:hover { background: #fff; border-color: var(--accent); }
+    
+    .input-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid #eee; }
+    input[type="text"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 14px; }
+
+    .question-box {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      padding: 1.5rem;
+      background: rgba(0,0,0,0.03);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+    .inline-select, .inline-time {
+      font-family: var(--font);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--accent);
+      cursor: pointer;
+      padding: 0 4px;
+      outline: none;
+    }
+
+    #resetBtn { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="wc-header">
+      <div class="logo-container">
+        <svg class="custom-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /><path d="M8 5h8M8 19h8M9 5v3c0 2 3 2 3 4s3 2 3 4v3M15 5v3c0 2-3 2-3 4s-3 2-3 4v3" opacity="0.4"/>
+        </svg>
+        <div class="wc-title">Hourglass</div>
+      </div>
+      <div class="header-actions">
+        <button onclick="sortPinnedByTime()"><i class="ti ti-sort-ascending"></i> Sort</button>
+        <button id="resetBtn" onclick="resetToNow()"><i class="ti ti-refresh"></i> Live</button>
+      </div>
+    </div>
+
+    <div class="wc-grid" id="clockGrid"></div>
+
+    <p style="font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase;">Manage Pinned Timezones</p>
+    <div class="input-row">
+      <input type="text" id="addCityInput" list="allTimezones" placeholder="Search by path (e.g. Asia / India / Delhi)...">
+      <datalist id="allTimezones"></datalist>
+      <button onclick="addClock()"><i class="ti ti-plus"></i> Pin City</button>
+    </div>
+
+    <div class="question-box">
+      I'm wondering, what time is it in my pinned cities if it's 
+      <input type="time" id="srcTime" class="inline-time" onchange="convertTime()"> 
+      in 
+      <select id="srcZone" class="inline-select" onchange="convertTime()"></select>?
+    </div>
+  </div>
+
+  <script>
+    const MAJOR_CITIES = [
+      { label: "Honolulu", path: "Pacific / USA / Honolulu", tz: "Pacific/Honolulu" },
+      { label: "Anchorage", path: "America / USA / Anchorage", tz: "America/Anchorage" },
+      { label: "Vancouver", path: "America / Canada / Vancouver", tz: "America/Vancouver" },
+      { label: "Seattle", path: "America / USA / Seattle", tz: "America/Los_Angeles" },
+      { label: "San Francisco", path: "America / USA / San Francisco", tz: "America/Los_Angeles" },
+      { label: "Los Angeles", path: "America / USA / Los Angeles", tz: "America/Los_Angeles" },
+      { label: "Denver", path: "America / USA / Denver", tz: "America/Denver" },
+      { label: "Phoenix", path: "America / USA / Phoenix", tz: "America/Phoenix" },
+      { label: "Mexico City", path: "America / Mexico / Mexico City", tz: "America/Mexico_City" },
+      { label: "Chicago", path: "America / USA / Chicago", tz: "America/Chicago" },
+      { label: "Toronto", path: "America / Canada / Toronto", tz: "America/Toronto" },
+      { label: "New York", path: "America / USA / New York", tz: "America/New_York" },
+      { label: "Washington DC", path: "America / USA / Washington DC", tz: "America/New_York" },
+      { label: "Miami", path: "America / USA / Miami", tz: "America/New_York" },
+      { label: "Bogota", path: "America / Colombia / Bogota", tz: "America/Bogota" },
+      { label: "Lima", path: "America / Peru / Lima", tz: "America/Lima" },
+      { label: "Santiago", path: "America / Chile / Santiago", tz: "America/Santiago" },
+      { label: "Caracas", path: "America / Venezuela / Caracas", tz: "America/Caracas" },
+      { label: "Buenos Aires", path: "America / Argentina / Buenos Aires", tz: "America/Argentina/Buenos_Aires" },
+      { label: "Sao Paulo", path: "America / Brazil / Sao Paulo", tz: "America/Sao_Paulo" },
+      { label: "Rio de Janeiro", path: "America / Brazil / Rio", tz: "America/Sao_Paulo" },
+      { label: "London", path: "Europe / UK / London", tz: "Europe/London" },
+      { label: "Dublin", path: "Europe / Ireland / Dublin", tz: "Europe/Dublin" },
+      { label: "Lisbon", path: "Europe / Portugal / Lisbon", tz: "Europe/Lisbon" },
+      { label: "Casablanca", path: "Africa / Morocco / Casablanca", tz: "Africa/Casablanca" },
+      { label: "Paris", path: "Europe / France / Paris", tz: "Europe/Paris" },
+      { label: "Amsterdam", path: "Europe / Netherlands / Amsterdam", tz: "Europe/Amsterdam" },
+      { label: "Berlin", path: "Europe / Germany / Berlin", tz: "Europe/Berlin" },
+      { label: "Rome", path: "Europe / Italy / Rome", tz: "Europe/Rome" },
+      { label: "Madrid", path: "Europe / Spain / Madrid", tz: "Europe/Madrid" },
+      { label: "Zurich", path: "Europe / Switzerland / Zurich", tz: "Europe/Zurich" },
+      { label: "Stockholm", path: "Europe / Sweden / Stockholm", tz: "Europe/Stockholm" },
+      { label: "Lagos", path: "Africa / Nigeria / Lagos", tz: "Africa/Lagos" },
+      { label: "Athens", path: "Europe / Greece / Athens", tz: "Europe/Athens" },
+      { label: "Helsinki", path: "Europe / Finland / Helsinki", tz: "Europe/Helsinki" },
+      { label: "Istanbul", path: "Europe / Turkey / Istanbul", tz: "Europe/Istanbul" },
+      { label: "Cairo", path: "Africa / Egypt / Cairo", tz: "Africa/Cairo" },
+      { label: "Johannesburg", path: "Africa / South Africa / Johannesburg", tz: "Africa/Johannesburg" },
+      { label: "Nairobi", path: "Africa / Kenya / Nairobi", tz: "Africa/Nairobi" },
+      { label: "Moscow", path: "Europe / Russia / Moscow", tz: "Europe/Moscow" },
+      { label: "Riyadh", path: "Asia / Saudi Arabia / Riyadh", tz: "Asia/Riyadh" },
+      { label: "Dubai", path: "Asia / UAE / Dubai", tz: "Asia/Dubai" },
+      { label: "Abu Dhabi", path: "Asia / UAE / Abu Dhabi", tz: "Asia/Dubai" },
+      { label: "Karachi", path: "Asia / Pakistan / Karachi", tz: "Asia/Karachi" },
+      { label: "Kolkata", path: "Asia / India / Kolkata", tz: "Asia/Kolkata" },
+      { label: "Delhi", path: "Asia / India / Delhi", tz: "Asia/Kolkata" },
+      { label: "Mumbai", path: "Asia / India / Mumbai", tz: "Asia/Kolkata" },
+      { label: "Bangalore", path: "Asia / India / Bangalore", tz: "Asia/Kolkata" },
+      { label: "Chennai", path: "Asia / India / Chennai", tz: "Asia/Kolkata" },
+      { label: "Hyderabad", path: "Asia / India / Hyderabad", tz: "Asia/Kolkata" },
+      { label: "Ahmedabad", path: "Asia / India / Ahmedabad", tz: "Asia/Kolkata" },
+      { label: "Dhaka", path: "Asia / Bangladesh / Dhaka", tz: "Asia/Dhaka" },
+      { label: "Bangkok", path: "Asia / Thailand / Bangkok", tz: "Asia/Bangkok" },
+      { label: "Jakarta", path: "Asia / Indonesia / Jakarta", tz: "Asia/Jakarta" },
+      { label: "Ho Chi Minh City", path: "Asia / Vietnam / Ho Chi Minh", tz: "Asia/Ho_Chi_Minh" },
+      { label: "Singapore", path: "Asia / Singapore / Singapore", tz: "Asia/Singapore" },
+      { label: "Kuala Lumpur", path: "Asia / Malaysia / Kuala Lumpur", tz: "Asia/Kuala_Lumpur" },
+      { label: "Hong Kong", path: "Asia / Hong Kong", tz: "Asia/Hong_Kong" },
+      { label: "Shanghai", path: "Asia / China / Shanghai", tz: "Asia/Shanghai" },
+      { label: "Beijing", path: "Asia / China / Beijing", tz: "Asia/Shanghai" },
+      { label: "Taipei", path: "Asia / Taiwan / Taipei", tz: "Asia/Taipei" },
+      { label: "Tokyo", path: "Asia / Japan / Tokyo", tz: "Asia/Tokyo" },
+      { label: "Seoul", path: "Asia / South Korea / Seoul", tz: "Asia/Seoul" },
+      { label: "Manila", path: "Asia / Philippines / Manila", tz: "Asia/Manila" },
+      { label: "Brisbane", path: "Australia / Brisbane", tz: "Australia/Brisbane" },
+      { label: "Sydney", path: "Australia / Sydney", tz: "Australia/Sydney" },
+      { label: "Melbourne", path: "Australia / Melbourne", tz: "Australia/Melbourne" },
+      { label: "Auckland", path: "Pacific / New Zealand / Auckland", tz: "Pacific/Auckland" }
+    ];
+
+    let pinned = [];
+    let convertedBase = null;
+    const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    function getOffsetMinutes(tz) {
+      const now = new Date();
+      const utcDate = new Date(now.toLocaleString('en-US', { timeZone: 'UTC' }));
+      const tzDate = new Date(now.toLocaleString('en-US', { timeZone: tz }));
+      return (tzDate - utcDate) / 60000;
+    }
+
+    const sortedMasterList = [...MAJOR_CITIES].sort((a, b) => getOffsetMinutes(a.tz) - getOffsetMinutes(b.tz));
+
+    function init() {
+      const localCityName = localTz.split('/').pop().replace(/_/g, ' ');
+      pinned = [
+        { label: localCityName, tz: localTz },
+        { label: "New York", tz: "America/New_York" },
+        { label: "London", tz: "Europe/London" },
+        { label: "Delhi", tz: "Asia/Kolkata" }
+      ];
+      setupSortable();
+      populateDropdowns();
+      resetToNow();
+    }
+
+    function setupSortable() {
+      Sortable.create(document.getElementById('clockGrid'), {
+        animation: 150,
+        onEnd: function() {
+          const newOrder = [];
+          document.querySelectorAll('.clock-card').forEach(card => newOrder.push(pinned[card.dataset.index]));
+          pinned = newOrder;
+          renderGrid(convertedBase);
+          updateBodyGradient();
+        }
+      });
+    }
+
+    function renderGrid(refDate) {
+      const grid = document.getElementById("clockGrid");
+      grid.innerHTML = "";
+      const now = refDate || new Date();
+      pinned.forEach((c, i) => {
+        const timeStr = now.toLocaleTimeString("en-US", {hour:"2-digit", minute:"2-digit", timeZone:c.tz, hour12:true});
+        const hr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: c.tz }).format(now));
+        const isDay = hr >= 6 && hr < 18;
+        const card = document.createElement("div");
+        card.className = `clock-card ${isDay ? 'day' : 'night'}`;
+        card.dataset.index = i;
+        const diff = (getOffsetMinutes(c.tz) - getOffsetMinutes(localTz)) / 60;
+        const offStr = diff === 0 ? "Local Time" : `${diff > 0 ? "+" : ""}${diff} hrs from local`;
+        card.innerHTML = `<i class="ti ${isDay ? 'ti-sun' : 'ti-moon-stars'} day-night-icon"></i><div class="clock-city">${c.label}</div><div class="clock-offset">${offStr}</div><div class="clock-time">${timeStr}</div><div class="clock-date">${now.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", timeZone:c.tz})}</div><div class="card-actions"><button onclick="removeClock(${i})"><i class="ti ti-x"></i></button></div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function populateDropdowns() {
+      // Synchronize both list definitions
+      const dropdownHtml = sortedMasterList.map(c => `<option value="${c.tz}">${c.label}</option>`).join("");
+      document.getElementById("srcZone").innerHTML = dropdownHtml;
+      
+      const datalistHtml = sortedMasterList.map(z => `<option value="${z.path}">`).join("");
+      document.getElementById("allTimezones").innerHTML = datalistHtml;
+      
+      document.getElementById("srcZone").value = localTz;
+    }
+
+    function convertTime() {
+      const tz = document.getElementById("srcZone").value;
+      const t = document.getElementById("srcTime").value;
+      const [h, m] = t.split(":").map(Number);
+      const now = new Date();
+      const datePart = now.toLocaleDateString("en-CA", {timeZone: tz});
+      const parts = new Intl.DateTimeFormat("en-US", {timeZone: tz, timeZoneName: "longOffset"}).formatToParts(now);
+      const offset = parts.find(p => p.type === "timeZoneName").value.replace("GMT", "") || "Z";
+      convertedBase = new Date(`${datePart}T${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:00${offset}`);
+      
+      document.getElementById("resetBtn").style.display = "inline-flex";
+      renderGrid(convertedBase);
+      updateBodyGradient();
+    }
+
+    function resetToNow() {
+      convertedBase = null;
+      document.getElementById("resetBtn").style.display = "none";
+      const now = new Date();
+      document.getElementById("srcTime").value = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+      document.getElementById("srcZone").value = localTz;
+      renderGrid();
+      updateBodyGradient();
+    }
+
+    function addClock() {
+      const val = document.getElementById("addCityInput").value;
+      const match = sortedMasterList.find(z => z.path === val);
+      if (match && !pinned.find(c => c.tz === match.tz && c.label === match.label)) {
+        pinned.push({ label: match.label, tz: match.tz });
+        document.getElementById("addCityInput").value = "";
+        renderGrid(convertedBase);
+      }
+    }
+
+    function removeClock(i) { pinned.splice(i, 1); renderGrid(convertedBase); }
+    function sortPinnedByTime() { pinned.sort((a,b) => getOffsetMinutes(a.tz) - getOffsetMinutes(b.tz)); renderGrid(convertedBase); }
+    
+    function updateBodyGradient() {
+      if (pinned.length === 0) return;
+      const ref = convertedBase || new Date();
+      const firstHr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: pinned[0].tz }).format(ref));
+      const lastHr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: pinned[pinned.length-1].tz }).format(ref));
+      document.body.style.background = `linear-gradient(120deg, ${(firstHr >= 6 && firstHr < 18) ? "#ADD8E6" : "#2D3748"} 0%, ${(lastHr >= 6 && lastHr < 18) ? "#ADD8E6" : "#1A202C"} 100%)`;
+    }
+
+    init();
+    setInterval(() => { if (!convertedBase) { renderGrid(); updateBodyGradient(); } }, 30000);
+  </script>
+</body>
+</html>
