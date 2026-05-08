@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,65 +8,199 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     :root {
       --text-primary: #1a1a18;
       --text-secondary: #4A5568;
       --accent: #378ADD;
-      --logo-color: #2D3748; 
-      --day-bg: #ADD8E6;    
-      --night-bg: #374151;  
+      --logo-color: #2D3748;
+      --day-bg: #ADD8E6;
+      --night-bg: #374151;
       --night-text: #F3F4F6;
       --radius-lg: 12px;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    body { 
-      font-family: var(--font); 
+
+    body {
+      font-family: var(--font);
       background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
       background-attachment: fixed;
-      color: var(--text-primary); 
-      min-height: 100vh; 
-      padding: 2rem 1rem; 
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem 1rem;
       transition: background 1s ease;
     }
-    .container { max-width: 860px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: var(--radius-lg); padding: 1.75rem 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
-    
-    .wc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 10px; }
-    .logo-container { display: flex; align-items: center; gap: 12px; }
-    .custom-logo { width: 32px; height: 32px; color: var(--logo-color); }
-    .wc-title { font-size: 24px; font-weight: 600; color: var(--text-primary); }
-    
-    .header-actions { display: flex; gap: 8px; }
 
-    .wc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 2.5rem; }
-    
-    .clock-card { border-radius: var(--radius-lg); padding: 1.25rem; position: relative; transition: all 0.4s ease; border: 1px solid rgba(0,0,0,0.05); cursor: grab; }
-    .clock-card.day { background-color: var(--day-bg); color: #2D3748; box-shadow: 0 4px 12px rgba(173, 216, 230, 0.4); }
-    .clock-card.night { background-color: var(--night-bg); color: var(--night-text); box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4); }
-    
-    .day-night-icon { position: absolute; top: 1rem; right: 1rem; font-size: 20px; }
-    .clock-city { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; pointer-events: none; }
-    .clock-offset { font-size: 11px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; }
-    .clock-time { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.2; pointer-events: none; }
-    .clock-date { font-size: 12px; margin-top: 4px; opacity: 0.9; pointer-events: none; }
-    
-    .card-actions { display: flex; gap: 6px; margin-top: 12px; }
-    button { font-family: var(--font); font-size: 13px; padding: 6px 12px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; color: #1a1a18; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; }
-    button:hover { background: #fff; border-color: var(--accent); }
-    
-    .input-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid #eee; }
-    input[type="text"] { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 14px; }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .wc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .custom-logo {
+      width: 32px;
+      height: 32px;
+      color: var(--logo-color);
+    }
+
+    .wc-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .wc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .clock-card {
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      position: relative;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      cursor: grab;
+    }
+
+    .clock-card.day {
+      background-color: var(--day-bg);
+      color: #2D3748;
+      box-shadow: 0 4px 12px rgba(173, 216, 230, 0.4);
+    }
+
+    .clock-card.night {
+      background-color: var(--night-bg);
+      color: var(--night-text);
+      box-shadow: 0 4px 12px rgba(55, 65, 81, 0.4);
+    }
+
+    .day-night-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 20px;
+    }
+
+    .clock-city {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+      pointer-events: none;
+    }
+
+    .clock-offset {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.8;
+      margin-bottom: 8px;
+    }
+
+    .clock-time {
+      font-size: 28px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+
+    .clock-date {
+      font-size: 12px;
+      margin-top: 4px;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    button {
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      color: #1a1a18;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #fff;
+      border-color: var(--accent);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+    }
 
     .question-box {
       font-size: 18px;
       color: var(--text-secondary);
       line-height: 1.6;
       padding: 1.5rem;
-      background: rgba(0,0,0,0.03);
+      background: rgba(0, 0, 0, 0.03);
       border-radius: var(--radius-lg);
       text-align: center;
     }
-    .inline-select, .inline-time {
+
+    .inline-select,
+    .inline-time {
       font-family: var(--font);
       font-size: 18px;
       font-weight: 600;
@@ -78,15 +213,70 @@
       outline: none;
     }
 
-    #resetBtn { display: none; }
+    #resetBtn {
+      display: none;
+    }
+
+    /* Responsive adjustments for Mobile */
+    @media screen and (max-width: 600px) {
+      .container {
+        padding: 1rem;
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+      }
+
+      .wc-title {
+        font-size: 20px;
+      }
+
+      /* Make tiles stack better on narrow screens */
+      .wc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Fix the "What if" sentence for mobile wrap */
+      .question-box {
+        font-size: 16px;
+        text-align: left;
+        padding: 1rem;
+      }
+
+      .inline-select,
+      .inline-time {
+        font-size: 16px;
+        display: inline-block;
+        margin: 5px 0;
+        border-bottom-style: solid;
+        /* Solid is easier to tap than dashed on mobile */
+        background-color: rgba(55, 138, 221, 0.05);
+        /* Subtle highlight for tap area */
+        border-radius: 4px;
+        padding: 4px 8px;
+      }
+
+      /* Ensure the search bar takes full width on mobile */
+      .input-row {
+        flex-direction: column;
+      }
+
+      #addCityInput {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="wc-header">
       <div class="logo-container">
-        <svg class="custom-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /><path d="M8 5h8M8 19h8M9 5v3c0 2 3 2 3 4s3 2 3 4v3M15 5v3c0 2-3 2-3 4s-3 2-3 4v3" opacity="0.4"/>
+        <svg class="custom-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+          <path d="M8 5h8M8 19h8M9 5v3c0 2 3 2 3 4s3 2 3 4v3M15 5v3c0 2-3 2-3 4s-3 2-3 4v3" opacity="0.4" />
         </svg>
         <div class="wc-title">Hourglass</div>
       </div>
@@ -98,19 +288,26 @@
 
     <div class="wc-grid" id="clockGrid"></div>
 
-    <p style="font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase;">Manage Pinned Timezones</p>
+    <p
+      style="font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--text-secondary); text-transform: uppercase;">
+      Manage Pinned Timezones</p>
     <div class="input-row">
-      <input type="text" id="addCityInput" list="allTimezones" placeholder="Search by path (e.g. Asia / India / Delhi)...">
+      <input type="text" id="addCityInput" list="allTimezones"
+        placeholder="Search by path (e.g. Asia / India / Delhi)...">
       <datalist id="allTimezones"></datalist>
       <button onclick="addClock()"><i class="ti ti-plus"></i> Pin City</button>
     </div>
 
     <div class="question-box">
-      I'm wondering, what time is it in my pinned cities if it's 
-      <input type="time" id="srcTime" class="inline-time" onchange="convertTime()"> 
-      in 
+      I'm wondering, what time is it in my pinned cities if it's
+      <input type="time" id="srcTime" class="inline-time" onchange="convertTime()">
+      in
       <select id="srcZone" class="inline-select" onchange="convertTime()"></select>?
     </div>
+
+    <p style="text-align: center; font-size: 10px; margin-top: 20px; opacity: 0.5;">
+  Hourglass by Sneha Nautiyal | 2026
+</p>
   </div>
 
   <script>
@@ -198,14 +395,30 @@
 
     const sortedMasterList = [...MAJOR_CITIES].sort((a, b) => getOffsetMinutes(a.tz) - getOffsetMinutes(b.tz));
 
+    // --- NEW: STORAGE LOGIC ---
+    function saveData() {
+      localStorage.setItem('hourglass_pinned', JSON.stringify(pinned));
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem('hourglass_pinned');
+      if (saved) {
+        pinned = JSON.parse(saved);
+      } else {
+        // Default set if they have nothing saved
+        const localCityName = localTz.split('/').pop().replace(/_/g, ' ');
+        pinned = [
+          { label: localCityName, tz: localTz },
+          { label: "New York", tz: "America/New_York" },
+          { label: "London", tz: "Europe/London" },
+          { label: "Delhi", tz: "Asia/Kolkata" }
+        ];
+      }
+    }
+    // --------------------------
+
     function init() {
-      const localCityName = localTz.split('/').pop().replace(/_/g, ' ');
-      pinned = [
-        { label: localCityName, tz: localTz },
-        { label: "New York", tz: "America/New_York" },
-        { label: "London", tz: "Europe/London" },
-        { label: "Delhi", tz: "Asia/Kolkata" }
-      ];
+      loadData(); // Load first
       setupSortable();
       populateDropdowns();
       resetToNow();
@@ -214,10 +427,11 @@
     function setupSortable() {
       Sortable.create(document.getElementById('clockGrid'), {
         animation: 150,
-        onEnd: function() {
+        onEnd: function () {
           const newOrder = [];
           document.querySelectorAll('.clock-card').forEach(card => newOrder.push(pinned[card.dataset.index]));
           pinned = newOrder;
+          saveData(); // Save new order
           renderGrid(convertedBase);
           updateBodyGradient();
         }
@@ -229,7 +443,7 @@
       grid.innerHTML = "";
       const now = refDate || new Date();
       pinned.forEach((c, i) => {
-        const timeStr = now.toLocaleTimeString("en-US", {hour:"2-digit", minute:"2-digit", timeZone:c.tz, hour12:true});
+        const timeStr = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: c.tz, hour12: true });
         const hr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: c.tz }).format(now));
         const isDay = hr >= 6 && hr < 18;
         const card = document.createElement("div");
@@ -237,19 +451,16 @@
         card.dataset.index = i;
         const diff = (getOffsetMinutes(c.tz) - getOffsetMinutes(localTz)) / 60;
         const offStr = diff === 0 ? "Local Time" : `${diff > 0 ? "+" : ""}${diff} hrs from local`;
-        card.innerHTML = `<i class="ti ${isDay ? 'ti-sun' : 'ti-moon-stars'} day-night-icon"></i><div class="clock-city">${c.label}</div><div class="clock-offset">${offStr}</div><div class="clock-time">${timeStr}</div><div class="clock-date">${now.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric", timeZone:c.tz})}</div><div class="card-actions"><button onclick="removeClock(${i})"><i class="ti ti-x"></i></button></div>`;
+        card.innerHTML = `<i class="ti ${isDay ? 'ti-sun' : 'ti-moon-stars'} day-night-icon"></i><div class="clock-city">${c.label}</div><div class="clock-offset">${offStr}</div><div class="clock-time">${timeStr}</div><div class="clock-date">${now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: c.tz })}</div><div class="card-actions"><button onclick="removeClock(${i})"><i class="ti ti-x"></i></button></div>`;
         grid.appendChild(card);
       });
     }
 
     function populateDropdowns() {
-      // Synchronize both list definitions
       const dropdownHtml = sortedMasterList.map(c => `<option value="${c.tz}">${c.label}</option>`).join("");
       document.getElementById("srcZone").innerHTML = dropdownHtml;
-      
       const datalistHtml = sortedMasterList.map(z => `<option value="${z.path}">`).join("");
       document.getElementById("allTimezones").innerHTML = datalistHtml;
-      
       document.getElementById("srcZone").value = localTz;
     }
 
@@ -258,11 +469,10 @@
       const t = document.getElementById("srcTime").value;
       const [h, m] = t.split(":").map(Number);
       const now = new Date();
-      const datePart = now.toLocaleDateString("en-CA", {timeZone: tz});
-      const parts = new Intl.DateTimeFormat("en-US", {timeZone: tz, timeZoneName: "longOffset"}).formatToParts(now);
+      const datePart = now.toLocaleDateString("en-CA", { timeZone: tz });
+      const parts = new Intl.DateTimeFormat("en-US", { timeZone: tz, timeZoneName: "longOffset" }).formatToParts(now);
       const offset = parts.find(p => p.type === "timeZoneName").value.replace("GMT", "") || "Z";
-      convertedBase = new Date(`${datePart}T${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:00${offset}`);
-      
+      convertedBase = new Date(`${datePart}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00${offset}`);
       document.getElementById("resetBtn").style.display = "inline-flex";
       renderGrid(convertedBase);
       updateBodyGradient();
@@ -284,18 +494,28 @@
       if (match && !pinned.find(c => c.tz === match.tz && c.label === match.label)) {
         pinned.push({ label: match.label, tz: match.tz });
         document.getElementById("addCityInput").value = "";
+        saveData(); // Save new city
         renderGrid(convertedBase);
       }
     }
 
-    function removeClock(i) { pinned.splice(i, 1); renderGrid(convertedBase); }
-    function sortPinnedByTime() { pinned.sort((a,b) => getOffsetMinutes(a.tz) - getOffsetMinutes(b.tz)); renderGrid(convertedBase); }
-    
+    function removeClock(i) {
+      pinned.splice(i, 1);
+      saveData(); // Save deletion
+      renderGrid(convertedBase);
+    }
+
+    function sortPinnedByTime() {
+      pinned.sort((a, b) => getOffsetMinutes(a.tz) - getOffsetMinutes(b.tz));
+      saveData(); // Save sorted order
+      renderGrid(convertedBase);
+    }
+
     function updateBodyGradient() {
       if (pinned.length === 0) return;
       const ref = convertedBase || new Date();
       const firstHr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: pinned[0].tz }).format(ref));
-      const lastHr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: pinned[pinned.length-1].tz }).format(ref));
+      const lastHr = parseInt(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: pinned[pinned.length - 1].tz }).format(ref));
       document.body.style.background = `linear-gradient(120deg, ${(firstHr >= 6 && firstHr < 18) ? "#ADD8E6" : "#2D3748"} 0%, ${(lastHr >= 6 && lastHr < 18) ? "#ADD8E6" : "#1A202C"} 100%)`;
     }
 
@@ -303,4 +523,5 @@
     setInterval(() => { if (!convertedBase) { renderGrid(); updateBodyGradient(); } }, 30000);
   </script>
 </body>
+
 </html>
