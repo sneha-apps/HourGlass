@@ -265,6 +265,37 @@
         margin-bottom: 8px;
       }
     }
+    @media screen and (max-width: 600px) {
+  /* ... your other mobile styles ... */
+
+  #addCityInput {
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: 16px; /* Prevents iOS auto-zoom on focus */
+    padding: 12px;
+    background-color: #fff;
+    border: 2px solid #e2e8f0; /* Thicker border for better visibility */
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  /* Make the "Pin City" button much larger for thumbs */
+  .input-row button {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    font-weight: 600;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+  }
+
+  /* Ensure the datalist dropdown icon shows up on some mobile browsers */
+  #addCityInput::-webkit-calendar-picker-indicator {
+    display: block !important;
+    opacity: 0.5;
+  }
+}
   </style>
 </head>
 
